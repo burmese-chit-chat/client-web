@@ -1,7 +1,7 @@
 import ICloudinaryFile from "@/app/types/ICloudinaryFile";
 
 export default interface IUser {
-    _id?: string;
+    _id: string;
     username: string;
     password: string;
     name?: string;
