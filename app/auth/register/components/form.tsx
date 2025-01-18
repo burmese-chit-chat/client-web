@@ -7,6 +7,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const formSchema = z
     .object({
@@ -44,7 +45,9 @@ const formSchema = z
     });
 
 export default function RegisterForm() {
-    const [ loading, setLoading ] = useState(false);
+    const router = useRouter();
+    const [loading, setLoading] = useState<boolean>(false);
+    const [usernameLoading, setUsernameLoading] = useState<boolean>(false);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -53,19 +56,6 @@ export default function RegisterForm() {
             confirm_password: "",
         },
     });
-
-    async function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log("values", values);
-        setLoading(true);
-        try {
-            const response = await axios.post("/api/auth/register", values);
-            console.log("here", response);
-        } catch (e) {
-            console.error("error", e);
-        } finally {
-            setLoading(false);
-        }
-    }
 
     return (
         <Form {...form}>
@@ -77,9 +67,15 @@ export default function RegisterForm() {
                         <FormItem>
                             <FormLabel>Username</FormLabel>
                             <FormControl>
-                                <Input placeholder="your username" {...field} />
+                                <Input placeholder="your username" {...field} onChange={(e) => {
+                                    field.onChange(e);
+                                    checkUsername(e.target.value);
+                                }}/>
                             </FormControl>
-                            <FormDescription>This is your unique identifier(id) in Burmese Chit Chat. Others users can find you easily using this id or share your profile.</FormDescription>
+                            <FormDescription>
+                                This is your unique identifier(id) in Burmese Chit Chat. Others users can find you easily using this id or share your profile.
+                                { usernameLoading && <span>Loading....</span> }
+                            </FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
@@ -116,7 +112,52 @@ export default function RegisterForm() {
                     Submit
                 </Button>
             </form>
-            { loading && <div>Loading...</div> }
+            {loading && <div>Loading...</div>}
         </Form>
     );
+
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        if(usernameLoading) return;
+        if(!await checkUsername(values.username)) return;
+        console.log("values", values);
+        setLoading(true);
+        try {
+            const response = await axios.post("/api/auth/register", values);
+            console.log("here", response);
+            console.log("status", response.status);
+            if (response.status === 200 && response.data.redirect) {
+                console.log("OK");
+                form.reset();
+                router.push(response.data.url);
+            }
+        } catch (e) {
+            console.error("error", e);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function checkUsername(username: string) : Promise<boolean> {
+        if (username.length < 2) return true;
+        setUsernameLoading(true);
+        try {
+            const response = await axios.get(`/api/auth/is-valid-username?username=${username}`);
+            console.log("response from checking username", response);
+            if (response.data.status === 200) {
+                form.clearErrors("username");
+                return true;
+            } else {
+                form.setError("username", {
+                    type: "manual",
+                    message: "Username is already taken",
+                });
+                return false;
+            }
+        } catch (e) {
+            console.error("error", e);
+            return false;
+        } finally {
+            setUsernameLoading(false);
+        }
+    }
 }
