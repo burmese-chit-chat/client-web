@@ -5,9 +5,9 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-// import axios from "axios";
+import axios from "axios";
 import { useState } from "react";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const formSchema = z
     .object({
@@ -35,7 +35,7 @@ const formSchema = z
     })
 
 export default function LoginForm() {
-    // const router = useRouter();
+    const router = useRouter();
     const [loading, setLoading] = useState<boolean>(false);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -90,21 +90,21 @@ export default function LoginForm() {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         console.log("values", values);
-        // setLoading(true);
-        // try {
-        //     const response = await axios.post("/api/auth/register", values);
-        //     console.log("here", response);
-        //     console.log("status", response.status);
-        //     if (response.status === 200 && response.data.redirect) {
-        //         console.log("OK");
-        //         form.reset();
-        //         router.push(response.data.url);
-        //     }
-        // } catch (e) {
-        //     console.error("error", e);
-        // } finally {
-        //     setLoading(false);
-        // }
+        setLoading(true);
+        try {
+            const response = await axios.post("/api/auth/login", values);
+            console.log("here", response);
+            console.log("status", response.status);
+            if (response.status === 200 && response.data.redirect) {
+                console.log("OK");
+                form.reset();
+                router.push(response.data.url);
+            }
+        } catch (e) {
+            console.error("error", e);
+        } finally {
+            setLoading(false);
+        }
     }
 }
 

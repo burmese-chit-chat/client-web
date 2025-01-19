@@ -7,6 +7,7 @@ import ThemeToggle from "@/app/components/theme-toggle";
 import { AlignJustify } from "lucide-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import EnumGlobals from "@/app/types/EnumPlatformName";
 interface IProps {
     user_id: string;
 }
@@ -17,15 +18,15 @@ export default function SideBar({ user_id }: IProps) {
     const closeSheet = () => setIsOpen(false);
     return (
         <header className="py-4">
-            <nav className="flex justify-between">
-                <h1 className=" uppercase font-bold">Burma Tasty House</h1>
+            <nav className="flex justify-between items-center">
+                <h1 className=" uppercase font-bold">{ EnumGlobals.platform_name }</h1>
                 <div className="flex gap-4">
                     <ThemeToggle></ThemeToggle>
                     <Sheet open={isOpen} onOpenChange={setIsOpen}>
                         <SheetTrigger>
                             <AlignJustify />
                         </SheetTrigger>
-                        <SheetContent>
+                        <SheetContent aria-describedby="dialog-description">
                             <SheetHeader>
                                 <SheetTitle>Navigation Menu</SheetTitle>
                             </SheetHeader>
@@ -54,7 +55,7 @@ export default function SideBar({ user_id }: IProps) {
                     </Sheet>
                 </div>
             </nav>
-            <Separator className="mt-3"></Separator>
+            <Separator className="mt-3 h-[3px] bg-white"></Separator>
         </header>
     );
 
@@ -63,7 +64,7 @@ export default function SideBar({ user_id }: IProps) {
             const response = await axios.get('/api/auth/logout');
             console.log(response.data); 
             if(response.status === 200) {
-                router.push("/auth/register");
+                router.push("/auth/login");
             }
         } catch (e) {
             console.log(e);
