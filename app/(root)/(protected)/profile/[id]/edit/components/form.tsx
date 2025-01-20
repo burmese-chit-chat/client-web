@@ -114,7 +114,9 @@ export default function ProfileEditForm(props: IProps) {
                             <FormItem>
                                 <FormLabel>Age</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="18" {...field} type="number" />
+                                    <Input placeholder="18" {...field} type="number"
+                                    onChange={(e) => field.onChange(e.target.value === "" ? undefined : Number(e.target.value))}
+                                    />
                                 </FormControl>
                                 <FormDescription>What is your age?</FormDescription>
                                 <FormMessage />
