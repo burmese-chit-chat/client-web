@@ -12,7 +12,7 @@
     @apply text-[--foreground];
   }
   .auth-form-container {
-    @apply w-[90%] mx-auto mt-[100px];
+    @apply w-[90%] mx-auto mb-[50px];
   }
   .auth-form-title {
     @apply text-center uppercase font-bold mb-4;

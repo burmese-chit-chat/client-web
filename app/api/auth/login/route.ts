@@ -1,19 +1,16 @@
-import { NextResponse } from "next/server";
 import axios from "axios";
 import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-    const cookie_store = await cookies();
     try {
+        const cookie_store = await cookies();
         const api_url = process.env.API_URL;
         const body = await request.json();
+        console.log('the body', body);
 
-        // console.log("register body", body);
-        // console.log("api_url", api_url);
+        const response = await axios.post(`${api_url}/auth/login`, body);
 
-        const response = await axios.post(`${api_url}/auth/register`, body);
-
-        // console.log("response", response.data.token);
         cookie_store.set({
             name: "token",
             value: response.data.token,

@@ -32,28 +32,16 @@ const formSchema = z
                 message: "Password must be at most 50 characters.",
             }),
 
-        confirm_password: z.string().min(8, { message: "" }).max(50, { message: "" }),
     })
-    .superRefine(({ confirm_password, password }, ctx) => {
-        if (confirm_password !== password) {
-            ctx.addIssue({
-                code: "custom",
-                message: "The passwords did not match",
-                path: ["confirm_password"],
-            });
-        }
-    });
 
-export default function RegisterForm() {
+export default function LoginForm() {
     const router = useRouter();
     const [loading, setLoading] = useState<boolean>(false);
-    const [usernameLoading, setUsernameLoading] = useState<boolean>(false);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             username: "",
             password: "",
-            confirm_password: "",
         },
     });
 
@@ -67,14 +55,10 @@ export default function RegisterForm() {
                         <FormItem>
                             <FormLabel>Username</FormLabel>
                             <FormControl>
-                                <Input placeholder="your username" {...field} onChange={(e) => {
-                                    field.onChange(e);
-                                    checkUsername(e.target.value);
-                                }}/>
+                                <Input placeholder="your username" {...field}/>
                             </FormControl>
                             <FormDescription>
-                                This is your unique identifier(id) in Burmese Chit Chat. Others users can find you easily using this id or share your profile.
-                                { usernameLoading && <span>Loading....</span> }
+                                Please enter your user name.
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
@@ -89,21 +73,9 @@ export default function RegisterForm() {
                             <FormControl>
                                 <Input placeholder="password" {...field} type="password" />
                             </FormControl>
-                            <FormDescription>You know what this is. Keep it secret, keep it safe and don&apos;t forget.</FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="confirm_password"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Confirm Password</FormLabel>
-                            <FormControl>
-                                <Input placeholder="confirm password" {...field} type="password" />
-                            </FormControl>
-                            <FormDescription>Please re-enter your password to confirm.</FormDescription>
+                            <FormDescription>
+                                Please enter your password
+                            </FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
@@ -117,12 +89,10 @@ export default function RegisterForm() {
     );
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        if(usernameLoading) return;
-        if(!await checkUsername(values.username)) return;
         console.log("values", values);
         setLoading(true);
         try {
-            const response = await axios.post("/api/auth/register", values);
+            const response = await axios.post("/api/auth/login", values);
             console.log("here", response);
             console.log("status", response.status);
             if (response.status === 200 && response.data.redirect) {
@@ -136,28 +106,5 @@ export default function RegisterForm() {
             setLoading(false);
         }
     }
-
-    async function checkUsername(username: string) : Promise<boolean> {
-        if (username.length < 2) return true;
-        setUsernameLoading(true);
-        try {
-            const response = await axios.get(`/api/auth/is-valid-username?username=${username}`);
-            console.log("response from checking username", response);
-            if (response.data.status === 200) {
-                form.clearErrors("username");
-                return true;
-            } else {
-                form.setError("username", {
-                    type: "manual",
-                    message: "Username is already taken",
-                });
-                return false;
-            }
-        } catch (e) {
-            console.error("error", e);
-            return false;
-        } finally {
-            setUsernameLoading(false);
-        }
-    }
 }
+
