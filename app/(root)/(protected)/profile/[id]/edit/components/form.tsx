@@ -277,6 +277,7 @@ export default function ProfileEditForm(props: IProps) {
                 toast({
                     title: "User Successfully Updated",
                 });
+                router.refresh();
                 router.push(`/profile/${props._id}`);
             } else {
                 toast({
