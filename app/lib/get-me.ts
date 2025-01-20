@@ -6,7 +6,9 @@ export default async function get_me() : Promise<IUser | null> {
         const token = cookie_store.get("token")?.value;
         if(!token) return null;
         console.log("cookie_store token from get_me", token);
-        const response = await fetch("http://localhost:3000/api/auth/me?token=" + token,
+        const base_url = process.env.BASE_URL;
+        console.log('api url from get_me', base_url);
+        const response = await fetch(`${base_url}/api/auth/me?token=${token}`,
             {
                 credentials: "include",
                 next: { revalidate : 3600 }

@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'; // Force dynamic rendering
 import React from 'react'
 import SideBar from '@/app/(root)/components/side-bar'
 import get_me from '@/app/lib/get-me'

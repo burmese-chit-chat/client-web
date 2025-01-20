@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'; // Force dynamic rendering
 import React from 'react';
 import NavBar from "@/app/auth/components/nav-bar";
 import IUser from '../types/IUser';
