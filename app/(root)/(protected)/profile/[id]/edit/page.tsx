@@ -13,17 +13,17 @@ export default async function ProfileEdit({ params }: { params : Promise<{ id : 
             <h1 className="font-bold text-2xl">Edit Your Profile</h1>
             <Separator className="my-4"></Separator>
             <div className="mb-10">
-                <ProfileEditForm _id={id} name={ user?.name } age={user?.age} gender={ user?.gender } region={user?.region} status_message={user_data?.status_message} about_me={user_data?.about_me} interests={interests()} profile={user?.profile?.secure_url || ''}></ProfileEditForm>
+                <ProfileEditForm _id={id} name={ user?.name || '' } age={user?.age || 18 } gender={ user?.gender || '' } region={user?.region || ''} status_message={user_data?.status_message || ''} about_me={user_data?.about_me || ''} interests={interests()} profile={user?.profile?.secure_url || ''}></ProfileEditForm>
             </div>
         </>
     );
     function interests(): Array<string> {
         return [
-            user_data?.interests_1,
-            user_data?.interests_2,
-            user_data?.interests_3,
-            user_data?.interests_4,
-            user_data?.interests_5,
+            user_data?.interests_1 || '',
+            user_data?.interests_2 || '',
+            user_data?.interests_3 || '',
+            user_data?.interests_4 || '',
+            user_data?.interests_5 || '',
         ];
     }
 }
