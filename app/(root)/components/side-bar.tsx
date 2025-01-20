@@ -6,7 +6,7 @@ import Link from "next/link";
 import ThemeToggle from "@/app/components/theme-toggle";
 import { AlignJustify } from "lucide-react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import EnumGlobals from "@/app/types/EnumPlatformName";
 interface IProps {
     user_id: string;
@@ -14,7 +14,7 @@ interface IProps {
 
 export default function SideBar({ user_id }: IProps) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    const router = useRouter();
+    // const router = useRouter();
     const closeSheet = () => setIsOpen(false);
     return (
         <header className="py-4">
@@ -70,7 +70,8 @@ export default function SideBar({ user_id }: IProps) {
             const response = await axios.get('/api/auth/logout');
             console.log(response.data); 
             if(response.status === 200) {
-                router.push("/auth/login");
+                // router.push("/auth/login");
+                window.location.href="/auth/login";
             }
         } catch (e) {
             console.log(e);

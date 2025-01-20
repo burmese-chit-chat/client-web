@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/app/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster"
+import inactivity_protect from "./lib/inactivity-protect";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -19,11 +20,12 @@ export const metadata: Metadata = {
     description: "A Burmese community chat app",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    await inactivity_protect();
     return (
         <html lang="en" suppressHydrationWarning>
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased px-4`}>
