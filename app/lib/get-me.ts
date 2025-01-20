@@ -11,7 +11,7 @@ export default async function get_me() : Promise<IUser | null> {
         const response = await fetch(`${base_url}/api/auth/me?token=${token}`,
             {
                 credentials: "include",
-                next: { revalidate : 3600 }
+                cache : 'no-store'
             }
         );
         const data = await response.json();
