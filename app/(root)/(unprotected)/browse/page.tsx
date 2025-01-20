@@ -18,6 +18,7 @@ export default async function BrowsePage() {
                                 <GeneralInfo
                                   _id={item._id}
                                   username={item.username}
+                                  name={item?.name || item.username}
                                   profile={item?.profile?.secure_url || ""}
                                   gender={item?.gender}
                                   age={item?.age}
