@@ -128,6 +128,7 @@ export default function RegisterForm() {
             if (response.status === 200 && response.data.redirect) {
                 console.log("OK");
                 form.reset();
+                router.refresh();
                 router.push(response.data.url);
             }
         } catch (e) {
