@@ -19,7 +19,7 @@ export default async function Profile({ params }: { params: Promise<{ id: string
         <>
             <div className="mb-10">
                 <div>
-                    <GeneralInfo username={user?.username} name={user?.name} gender={user?.gender} age={user?.age} region={user?.region} _id={id} profile={user?.profile?.secure_url || ''} />
+                    <GeneralInfo username={user?.username} name={user?.name} gender={user?.gender} age={user?.age} region={user?.region} _id={id} profile={user?.profile?.secure_url || ''}  />
                     {me?._id && me._id === id && (
                         <div className="mt-4">
                             <Link href={`/profile/${id}/edit`} className={buttonVariants({ variant: "secondary" })}>
