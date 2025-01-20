@@ -5,6 +5,7 @@ import React from "react";
 
 export default async function layout({ children }: { children: React.ReactNode }) {
     const user : IUser | null = await get_me();
+    console.log('user from protected layout', user);
     if(!user) redirect("/auth/register");
     return <>{children}</>;
 }
