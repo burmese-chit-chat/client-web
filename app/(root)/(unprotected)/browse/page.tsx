@@ -11,10 +11,10 @@ export default async function BrowsePage() {
             <h1 className="font-bold uppercase">Our lovely users</h1>
             {!users.length && <div className="opacity-80">No users found...</div>}
             {!!users.length && (
-                <div className="mt-4 space-y-3 cursor-pointer">
+                <div className="mt-4 space-y-4">
                     {!!users.length &&
                         users.map((item, i) => (
-                            <Link href={`/profile/${item._id}`} className="" key={item._id}>
+                            <Link href={`/profile/${item._id}`} className="block" key={item._id}>
                                 <GeneralInfo
                                   _id={item._id}
                                   username={item.username}
