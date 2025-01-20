@@ -7,7 +7,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 const formSchema = z
     .object({
@@ -45,7 +45,7 @@ const formSchema = z
     });
 
 export default function RegisterForm() {
-    const router = useRouter();
+    // const router = useRouter();
     const [loading, setLoading] = useState<boolean>(false);
     const [usernameLoading, setUsernameLoading] = useState<boolean>(false);
     const form = useForm<z.infer<typeof formSchema>>({
@@ -128,8 +128,7 @@ export default function RegisterForm() {
             if (response.status === 200 && response.data.redirect) {
                 console.log("OK");
                 form.reset();
-                router.refresh();
-                router.push(response.data.url);
+                window.location.href=response.data.url || "/";
             }
         } catch (e) {
             console.error("error", e);
