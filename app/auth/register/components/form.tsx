@@ -7,6 +7,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 // import { useRouter } from "next/navigation";
 
 const formSchema = z
@@ -45,6 +46,7 @@ const formSchema = z
     });
 
 export default function RegisterForm() {
+    const { toast } = useToast();
     // const router = useRouter();
     const [loading, setLoading] = useState<boolean>(false);
     const [usernameLoading, setUsernameLoading] = useState<boolean>(false);
@@ -67,14 +69,18 @@ export default function RegisterForm() {
                         <FormItem>
                             <FormLabel>Username</FormLabel>
                             <FormControl>
-                                <Input placeholder="your username" {...field} onChange={(e) => {
-                                    field.onChange(e);
-                                    checkUsername(e.target.value);
-                                }}/>
+                                <Input
+                                    placeholder="your username"
+                                    {...field}
+                                    onChange={e => {
+                                        field.onChange(e);
+                                        checkUsername(e.target.value);
+                                    }}
+                                />
                             </FormControl>
                             <FormDescription>
                                 This is your unique identifier(id) in Burmese Chit Chat. Others users can find you easily using this id or share your profile.
-                                { usernameLoading && <span>Loading....</span> }
+                                {usernameLoading && <span>Loading....</span>}
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
@@ -117,27 +123,36 @@ export default function RegisterForm() {
     );
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        if(usernameLoading) return;
-        if(!await checkUsername(values.username)) return;
+            const error_message = "error registering, this may not be your fault, please try again later or contact the developer";
+        if (usernameLoading) return;
+        if (!(await checkUsername(values.username))) return;
         console.log("values", values);
         setLoading(true);
         try {
             const response = await axios.post("/api/auth/register", values);
-            console.log("here", response);
-            console.log("status", response.status);
             if (response.status === 200 && response.data.redirect) {
-                console.log("OK");
                 form.reset();
-                window.location.href=response.data.url || "/";
+                window.location.href = response.data.url || "/";
+            } else {
+                toast({
+                    title: "Register Error",
+                    description: error_message,
+                    variant: "destructive",
+                });
             }
         } catch (e) {
             console.error("error", e);
+            toast({
+                title: "Register Error",
+                description: error_message,
+                variant: "destructive",
+            });
         } finally {
             setLoading(false);
         }
     }
 
-    async function checkUsername(username: string) : Promise<boolean> {
+    async function checkUsername(username: string): Promise<boolean> {
         if (username.length < 2) return true;
         setUsernameLoading(true);
         try {
