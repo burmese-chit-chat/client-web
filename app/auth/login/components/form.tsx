@@ -7,34 +7,34 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 // import { useRouter } from "next/navigation";
 
-const formSchema = z
-    .object({
-        username: z
-            .string()
-            .min(2, {
-                message: "Username must be at least 2 characters.",
-            })
-            .max(50, {
-                message: "Username must be at most 50 characters.",
-            })
-            .regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores")
-            .refine(value => !value.includes("."), `Username cannot contain periods, "."`)
-            .refine(value => !value.includes(" ") && !value.includes("\n"), "Username cannot contain spaces or line breaks"),
+const formSchema = z.object({
+    username: z
+        .string()
+        .min(2, {
+            message: "Username must be at least 2 characters.",
+        })
+        .max(50, {
+            message: "Username must be at most 50 characters.",
+        })
+        .regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores")
+        .refine(value => !value.includes("."), `Username cannot contain periods, "."`)
+        .refine(value => !value.includes(" ") && !value.includes("\n"), "Username cannot contain spaces or line breaks"),
 
-        password: z
-            .string()
-            .min(8, {
-                message: "Password must be at least 8 characters.",
-            })
-            .max(50, {
-                message: "Password must be at most 50 characters.",
-            }),
-
-    })
+    password: z
+        .string()
+        .min(8, {
+            message: "Password must be at least 8 characters.",
+        })
+        .max(50, {
+            message: "Password must be at most 50 characters.",
+        }),
+});
 
 export default function LoginForm() {
+    const { toast } = useToast();
     // const router = useRouter();
     const [loading, setLoading] = useState<boolean>(false);
     const form = useForm<z.infer<typeof formSchema>>({
@@ -55,11 +55,9 @@ export default function LoginForm() {
                         <FormItem>
                             <FormLabel>Username</FormLabel>
                             <FormControl>
-                                <Input placeholder="your username" {...field}/>
+                                <Input placeholder="your username" {...field} />
                             </FormControl>
-                            <FormDescription>
-                                Please enter your user name.
-                            </FormDescription>
+                            <FormDescription>Please enter your user name.</FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
@@ -73,9 +71,7 @@ export default function LoginForm() {
                             <FormControl>
                                 <Input placeholder="password" {...field} type="password" />
                             </FormControl>
-                            <FormDescription>
-                                Please enter your password
-                            </FormDescription>
+                            <FormDescription>Please enter your password</FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
@@ -89,22 +85,29 @@ export default function LoginForm() {
     );
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log("values", values);
+            const error_message: string = "Login error, this may be because of invalid credentials or server error. If you are sure your credentials are correct, please contact the developer.";
         setLoading(true);
         try {
             const response = await axios.post("/api/auth/login", values);
-            console.log("here", response);
-            console.log("status", response.status);
             if (response.status === 200 && response.data.redirect) {
-                console.log("OK");
                 form.reset();
-                window.location.href=response.data.url || "/";
+                window.location.href = response.data.url || "/";
+            } else {
+                toast({
+                    title: "Login Failed",
+                    description: error_message,
+                    variant: "destructive",
+                });
             }
         } catch (e) {
             console.error("error", e);
+            toast({
+                title: "Login Failed",
+                description: error_message,
+                variant: "destructive",
+            });
         } finally {
             setLoading(false);
         }
     }
 }
-

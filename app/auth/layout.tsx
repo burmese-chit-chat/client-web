@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { buttonVariants } from '@/components/ui/button';
 export default async function Layout({ children } : { children: React.ReactNode }) {
   const user : IUser | null = await get_me();
-  console.log('user', user);
+  console.log('user from auth layout', user);
   if(user) { redirect("/"); }
   return (
     <>

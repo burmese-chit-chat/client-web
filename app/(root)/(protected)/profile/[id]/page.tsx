@@ -10,7 +10,12 @@ import Interests from "./components/interests";
 import get_user from "@/app/(root)/(protected)/profile/[id]/lib/get-user";
 import get_user_data from "./lib/get-user-data";
 
-export default async function Profile({ params }: { params: Promise<{ id: string }> }) {
+type Props = {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export default async function Profile({ params }: Props) {
     const me = await get_me();
     const { id } = await params;
     const user = await get_user(id);
@@ -60,5 +65,19 @@ export default async function Profile({ params }: { params: Promise<{ id: string
             user_data?.interests_4 || '',
             user_data?.interests_5 || '',
         ];
+    }
+}
+
+
+export async function generateMetadata({ params }: Props) {
+    const { id } = await params;
+    const user = await get_user(id);
+
+    return {
+        title : user?.name || user?.username || 'User Profile', 
+        description : `age - ${user?.age || ''}, gender - ${user?.gender || ''}, region - ${user?.region || ''}`, 
+        openGraph: {
+            images : [user?.profile?.secure_url || '']
+        }
     }
 }
