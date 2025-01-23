@@ -9,32 +9,37 @@ import Link from "next/link";
 import Interests from "./components/interests";
 import get_user from "@/app/(root)/(protected)/profile/[id]/lib/get-user";
 import get_user_data from "./lib/get-user-data";
+import DeleteProfileButton from "./components/delete-profile-button";
 
 type Props = {
-  params: Promise<{ id: string }>
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
-}
+    params: Promise<{ id: string }>;
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
 
 export default async function Profile({ params }: Props) {
     const me = await get_me();
     const { id } = await params;
     const user = await get_user(id);
     const user_data = await get_user_data(id);
+    const base_url = process.env.BASE_URL || "";
     return (
         <>
             <div className="mb-10">
                 <div>
-                    <GeneralInfo username={user?.username || ''} name={user?.name || ''} gender={user?.gender || ''} age={user?.age || ''} region={user?.region || ''} _id={id} profile={user?.profile?.secure_url || ''}  />
+                    <GeneralInfo username={user?.username || ""} name={user?.name || ""} gender={user?.gender || ""} age={user?.age || ""} region={user?.region || ""} _id={id} profile={user?.profile?.secure_url || ""} />
                     {me?._id && me._id === id && (
-                        <div className="mt-4">
+                        <div className="mt-9 flex items-center justify-between">
                             <Link href={`/profile/${id}/edit`} className={buttonVariants({ variant: "secondary" })}>
                                 <Pencil />
                                 Edit
                             </Link>
+
+                            <DeleteProfileButton user_id={id} base_url={base_url} />
+
                         </div>
                     )}
                     {me?._id && me._id !== id && (
-                        <div className="mt-4">
+                        <div className="mt-9">
                             <Button className="px-9 bg-green-400 text-black" variant="secondary">
                                 <BookMarked />
                                 Save User
@@ -58,26 +63,32 @@ export default async function Profile({ params }: Props) {
         </>
     );
     function interests_array(): Array<string> {
-        return [
-            user_data?.interests_1 || '',
-            user_data?.interests_2 || '',
-            user_data?.interests_3 || '',
-            user_data?.interests_4 || '',
-            user_data?.interests_5 || '',
-        ];
+        return [user_data?.interests_1 || "", user_data?.interests_2 || "", user_data?.interests_3 || "", user_data?.interests_4 || "", user_data?.interests_5 || ""];
     }
+    // function delete_profile(id: string) {
+    //     return async function () {
+    //         "use server";
+    //         const base_url = process.env.BASE_URL;
+    //         const response = await axios.delete(`${base_url}/api/users/${id}`);
+    //         console.log(response.data.data);
+    //         if (response.data.status === 200) {
+    //             redirect("/auth/login");
+    //         } else {
+    //             console.log("error deleting profile");
+    //         }
+    //     };
+    // }
 }
-
 
 export async function generateMetadata({ params }: Props) {
     const { id } = await params;
     const user = await get_user(id);
 
     return {
-        title : user?.name || user?.username || 'User Profile', 
-        description : `age - ${user?.age || ''}, gender - ${user?.gender || ''}, region - ${user?.region || ''}`, 
+        title: user?.name || user?.username || "User Profile",
+        description: `age - ${user?.age || ""}, gender - ${user?.gender || ""}, region - ${user?.region || ""}`,
         openGraph: {
-            images : [user?.profile?.secure_url || '']
-        }
-    }
+            images: [user?.profile?.secure_url || ""],
+        },
+    };
 }
