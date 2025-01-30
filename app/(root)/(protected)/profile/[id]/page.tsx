@@ -65,19 +65,6 @@ export default async function Profile({ params }: Props) {
     function interests_array(): Array<string> {
         return [user_data?.interests_1 || "", user_data?.interests_2 || "", user_data?.interests_3 || "", user_data?.interests_4 || "", user_data?.interests_5 || ""];
     }
-    // function delete_profile(id: string) {
-    //     return async function () {
-    //         "use server";
-    //         const base_url = process.env.BASE_URL;
-    //         const response = await axios.delete(`${base_url}/api/users/${id}`);
-    //         console.log(response.data.data);
-    //         if (response.data.status === 200) {
-    //             redirect("/auth/login");
-    //         } else {
-    //             console.log("error deleting profile");
-    //         }
-    //     };
-    // }
 }
 
 export async function generateMetadata({ params }: Props) {
