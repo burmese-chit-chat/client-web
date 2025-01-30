@@ -14,7 +14,7 @@ export default async function BrowsePage() {
                 <div className="mt-4 space-y-4">
                     {!!users.length &&
                         users.map((item, i) => (
-                            <Link href={`/profile/${item._id}`} className="block" key={item._id}>
+                            <Link href={`browse/users/${item.username}`} className="block" key={item._id}>
                                 <GeneralInfo
                                   _id={item._id}
                                   username={item.username}
