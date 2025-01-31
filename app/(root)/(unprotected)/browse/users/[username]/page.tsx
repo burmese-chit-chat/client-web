@@ -1,12 +1,16 @@
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const fetchCache = 'force-no-store';
+
 import React, { Suspense } from "react";
 import show_user_with_username from "./lib/show-user-with-username";
-import GeneralInfo from "@/app/(root)/(protected)/profile/[id]/components/general-info";
+import GeneralInfo from "@/app/(root)/(protected)/profile/components/general-info";
 import { Separator } from "@/components/ui/separator";
 import get_me from "@/app/lib/get-me";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { BookMarked, Pencil } from "lucide-react";
 import Link from "next/link";
-import DeleteProfileButton from "@/app/(root)/(protected)/profile/[id]/components/delete-profile-button";
+import DeleteProfileButton from "@/app/(root)/(protected)/profile/components/delete-profile-button";
 import BrowseUsersUserData from "./components/UserData";
 type IProps = {
     params: Promise<{ username: string }>;
@@ -27,7 +31,7 @@ export default async function page({ params }: IProps) {
                     <GeneralInfo username={user.username} name={user?.name || ""} gender={user?.gender || ""} age={user?.age || undefined} region={user?.region || ""} _id={user._id} profile={user?.profile?.secure_url || ""} />
                     {me?._id && me._id === user._id && (
                         <div className="mt-9 flex items-center justify-between">
-                            <Link href={`/profile/${me._id}/edit`} className={buttonVariants({ variant: "secondary" })}>
+                            <Link href={`/profile/edit`} className={buttonVariants({ variant: "secondary" })}>
                                 <Pencil />
                                 Edit
                             </Link>

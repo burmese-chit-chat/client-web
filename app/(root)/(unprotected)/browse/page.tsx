@@ -1,6 +1,6 @@
 import React from "react";
 import { browse_all_users } from "./lib/users";
-import GeneralInfo from "../../(protected)/profile/[id]/components/general-info";
+import GeneralInfo from "../../(protected)/profile/components/general-info";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import PaginationComponent from "@/app/components/pagination";
