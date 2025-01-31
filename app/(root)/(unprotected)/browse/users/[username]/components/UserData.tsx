@@ -1,9 +1,9 @@
 import IUser from "@/app/types/IUser";
 import React from "react";
 import { show_user_data_with_user_id } from "../lib/show-user-with-username";
-import Interests from "@/app/(root)/(protected)/profile/[id]/components/interests";
+import Interests from "@/app/(root)/(protected)/profile/components/interests";
 import { Separator } from "@/components/ui/separator";
-import LargeTexts from "@/app/(root)/(protected)/profile/[id]/components/large-texts";
+import LargeTexts from "@/app/(root)/(protected)/profile/components/large-texts";
 interface IProps {
     user_id: IUser["_id"];
 }

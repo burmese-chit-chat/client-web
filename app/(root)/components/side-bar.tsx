@@ -8,11 +8,8 @@ import { AlignJustify } from "lucide-react";
 import axios from "axios";
 // import { useRouter } from "next/navigation";
 import EnumGlobals from "@/app/types/EnumPlatformName";
-interface IProps {
-    user_id: string;
-}
 
-export default function SideBar({ user_id }: IProps) {
+export default function SideBar() {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     // const router = useRouter();
     const closeSheet = () => setIsOpen(false);
@@ -41,7 +38,7 @@ export default function SideBar({ user_id }: IProps) {
                                         </li>
                                     </Link>
                                     <Separator className="my-4"></Separator>
-                                    <Link href={`/profile/${user_id}`} onClick={closeSheet}>
+                                    <Link href={`/profile`} onClick={closeSheet}>
                                         <li className="hover:bg-slate-500 p-4 text-gray-800 rounded-sm">
                                             <span>Profile</span>
                                         </li>
