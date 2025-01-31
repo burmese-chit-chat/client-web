@@ -19,7 +19,9 @@ export default function SideBar({ user_id }: IProps) {
     return (
         <header className="py-4">
             <nav className="flex justify-between items-center">
-                <h1 className=" uppercase font-bold">{ EnumGlobals.platform_name }</h1>
+                <Link href="/">
+                    <h1 className=" uppercase font-bold">{ EnumGlobals.platform_name }</h1>
+                </Link>
                 <div className="flex gap-4">
                     <ThemeToggle></ThemeToggle>
                     <Sheet open={isOpen} onOpenChange={setIsOpen}>

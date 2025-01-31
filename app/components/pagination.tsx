@@ -13,9 +13,10 @@ interface PaginationProps {
     maxDisplayed?: number;
     /** Additional CSS classes */
     className?: string;
+    search_keyword? : string;
 }
 
-const PaginationComponent: React.FC<PaginationProps> = ({ currentPage = 1, totalPages = 1, basePath = "", maxDisplayed = 5, className = "" }) => {
+const PaginationComponent: React.FC<PaginationProps> = ({ currentPage = 1, totalPages = 1, basePath = "", maxDisplayed = 5, className = "", search_keyword = "" }) => {
     // Ensure currentPage and totalPages are numbers
     const current = Number(currentPage);
     const total = Number(totalPages);
@@ -40,9 +41,9 @@ const PaginationComponent: React.FC<PaginationProps> = ({ currentPage = 1, total
     // Helper to generate href for a page
     const getHref = (page: number): string => {
         if (basePath.includes("?")) {
-            return `${basePath}&page=${page}`;
+            return `${basePath}&page=${page}&search=${search_keyword}`;
         }
-        return `${basePath}?page=${page}`;
+        return `${basePath}?page=${page}&search=${search_keyword}`;
     };
 
     if (total <= 1) return null;

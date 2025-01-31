@@ -5,9 +5,9 @@ export default async function get_me() : Promise<IUser | null> {
         const cookie_store = await cookies();
         const token = cookie_store.get("token")?.value;
         if(!token) return null;
-        console.log("cookie_store token from get_me", token);
+        // console.log("cookie_store token from get_me", token);
         const base_url = process.env.BASE_URL;
-        console.log('api url from get_me', base_url);
+        // console.log('api url from get_me', base_url);
         const response = await fetch(`${base_url}/api/auth/me?token=${token}`,
             {
                 credentials: "include",
