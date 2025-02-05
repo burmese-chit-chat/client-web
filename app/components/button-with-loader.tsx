@@ -18,11 +18,9 @@ export default function ButtonWithLoader({ children, className, variant, handler
     const [loading, set_loading] = React.useState<boolean>(false);
     const handleClick = async () => {
         try {
-            console.log("here here");
             set_loading(true);
             if (handler) {
                 await handler();
-                console.log("Handler completed:");
             }
             if(navigation_link) {
                 router.push(navigation_link);
