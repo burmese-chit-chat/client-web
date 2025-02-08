@@ -101,7 +101,7 @@ export default function ChatPage() {
             <div className="p-4 border-t border-gray-300">
                 <div className="flex items-center">
                     <input type="text" className="flex-1 p-2 border border-gray-300 rounded-l-md focus:outline-none" placeholder="Type your message..." defaultValue="Type something..." readOnly />
-                    <button type="button" className="bg-blue-600 text-white px-4 py-2 rounded-r-md hover:bg-blue-700 transition">
+                    <button onClick={ () => { socket?.emit('send_message' , 'hello'); } } type="button" className="bg-blue-600 text-white px-4 py-2 rounded-r-md hover:bg-blue-700 transition">
                         Send
                     </button>
                 </div>
