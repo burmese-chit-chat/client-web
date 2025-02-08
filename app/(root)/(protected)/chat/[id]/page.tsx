@@ -1,8 +1,9 @@
 "use client";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
+import { io, Socket } from "socket.io-client";
 
 const hardcodedMessages = [
     {
@@ -48,12 +49,28 @@ const hardcodedMessages = [
 ];
 
 export default function ChatPage() {
+    const chat_service_url = process.env.NEXT_PUBLIC_CHAT_SERVICE_URL;
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const [socket, setSocket] = useState<Socket | null>(null);
+    console.log(socket);
 
     // Scroll to the bottom when the component mounts
     useEffect(() => {
+        if (!chat_service_url) {
+            console.error("Socket URL is undefined. Make sure NEXT_PUBLIC_CHAT_SERVICE_URL is set.");
+            return;
+        }
+        const newSocket = io(chat_service_url);
+        setSocket(newSocket);
+        newSocket.on("connect", () => {
+            console.log("Connected with socket id:", newSocket.id);
+        });
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, []);
+
+        return () => {
+            newSocket.disconnect();
+        };
+    }, [chat_service_url]);
 
     return (
         <div className="flex flex-col h-screen">
