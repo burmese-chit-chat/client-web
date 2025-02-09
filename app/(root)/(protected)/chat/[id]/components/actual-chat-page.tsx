@@ -7,6 +7,7 @@ import IMessage from "@/app/types/IMessage";
 import MessageBubble from "./message-bubble";
 import IUser from "@/app/types/IUser";
 import { useToast } from "@/hooks/use-toast";
+import { refreshConversations } from "../../../conversations/lib/actions";
 
 export default function ActualChatPage({ me, user, prop_messages }: { me: IUser; user: IUser; prop_messages: Array<IMessage> }) {
     const [messages, set_messages] = useState<Array<IMessage>>(prop_messages);
@@ -81,6 +82,7 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
         if (socket) {
             socket?.emit("send_message", { message, receiver_id: user._id, chat_room_id });
             set_new_message("");
+            refreshConversations();
         } else {
             toast({
                 description: "something went wrong",
