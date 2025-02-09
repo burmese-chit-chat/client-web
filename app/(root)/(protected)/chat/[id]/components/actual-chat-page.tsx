@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { io, Socket } from "socket.io-client";
@@ -8,15 +8,17 @@ import MessageBubble from "./message-bubble";
 import IUser from "@/app/types/IUser";
 import { useToast } from "@/hooks/use-toast";
 import { refreshConversations } from "../../../conversations/lib/actions";
+import axios from "axios";
 
 export default function ActualChatPage({ me, user, prop_messages }: { me: IUser; user: IUser; prop_messages: Array<IMessage> }) {
     const [messages, set_messages] = useState<Array<IMessage>>(prop_messages);
-    const [ loading_older, set_loading_older ] = useState<boolean>(false);
+    const [loading_older, set_loading_older] = useState<boolean>(false);
     const { toast } = useToast();
     const chat_service_url = process.env.NEXT_PUBLIC_CHAT_SERVICE_URL;
     const [new_message, set_new_message] = useState<string>("");
     const [socket, setSocket] = useState<Socket | null>(null);
     const chat_room_id = generate_chat_room_id(me._id, user._id);
+    const update_seen_based_on_sender = useMemo(get_update_seen_based_on_sender_function, [me._id]);
 
     // Scroll to the bottom when the component mounts
     useEffect(() => {
@@ -27,13 +29,16 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
         }
         const newSocket = io(chat_service_url);
         newSocket.emit("join_chat", chat_room_id);
-        newSocket.on("new_message", handle_new_message);
+        newSocket.on("new_message", async (arg: IMessage) => {
+            handle_new_message(arg);
+            if (newSocket.connected) await update_seen_based_on_sender(arg);
+        });
         setSocket(newSocket);
 
         return () => {
             newSocket.disconnect();
         };
-    }, [chat_service_url, chat_room_id]);
+    }, [chat_service_url, chat_room_id, update_seen_based_on_sender]);
 
     return (
         <div className="">
@@ -54,7 +59,7 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
             {/* Chat Messages Container */}
             <div className="flex-1 overflow-y-auto px-4 space-y-4 h-[62vh]">
                 <div onClick={load_more} className="text-center text-gray-400 cursor-pointer hover:bg-gray-700">
-                    { loading_older ? "loading..." : "load more" }
+                    {loading_older ? "loading..." : "load more"}
                 </div>
                 {messages.map(message => (
                     <MessageBubble key={message._id} message={message} me={me} user={user} />
@@ -96,6 +101,20 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
         set_messages(prev => [...prev, arg]);
     }
 
+    function get_update_seen_based_on_sender_function() {
+        return async function (message: IMessage) {
+            try {
+                if (me._id === message.sender_id) return;
+                console.log("updating seen...");
+                const api_url = process.env.NEXT_PUBLIC_API_URL;
+                const res = await axios.put(`${api_url}/chat/messages/is_read/${message._id}`);
+                console.log(res.data.data);
+            } catch (e) {
+                console.log(e);
+            }
+        };
+    }
+
     async function load_more() {
         try {
             set_loading_older(true);
@@ -103,10 +122,10 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
             const base_url = process.env.NEXT_PUBLIC_BASE_URL;
             const res = await fetch(`${base_url}/api/chat/messages/${me._id}/${user._id}?before=${lastMessage._id}`);
             const data = await res.json();
-            if(data.data.length === 0) {
+            if (data.data.length === 0) {
                 toast({
-                    description : "no more messages left"
-                })
+                    description: "no more messages left",
+                });
             }
             set_messages(prev => [...data.data, ...prev]);
             console.log(data);

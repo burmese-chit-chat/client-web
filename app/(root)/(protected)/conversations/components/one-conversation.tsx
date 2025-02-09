@@ -34,7 +34,7 @@ export default function OneConversation(props: IProps) {
                     <div className="flex justify-between col-span-10">
                         <div>
                             <div className="mb-2 text-lg font-bold">{user.name || user.username}</div>
-                            <div className={`text-sm ${props.conversation.is_seen ? 'text-gray-700' : 'text-white font-bold'}`}>{text_cut(props.conversation.last_message)}</div>
+                            <div className={`text-sm ${get_is_read() ? 'text-gray-700' : 'text-white font-bold'}`}>{text_cut(props.conversation.last_message.message)}</div>
                         </div>
                         <div className="w-7 h-7">{navigation_loading && <LoaderCircle className=" animate-spin" />}</div>
                     </div>
@@ -69,6 +69,10 @@ export default function OneConversation(props: IProps) {
         } catch (e) {
             console.log(e);
         } 
+    }
+
+    function get_is_read () {
+        return props.conversation.last_message.sender_id === props.me_id ? true : props.conversation.last_message.is_read;
     }
 }
 
