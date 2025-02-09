@@ -50,6 +50,12 @@ export default function SideBar() {
                                         </li>
                                     </Link>
                                     <Separator className="my-4"></Separator>
+                                    <Link href={`/conversations`} onClick={closeSheet}>
+                                        <li className="hover:bg-slate-500 p-4 text-gray-800 rounded-sm">
+                                            <span>My Conversations</span>
+                                        </li>
+                                    </Link>
+                                    <Separator className="my-4"></Separator>
                                     <li className="hover:bg-slate-500 p-4 text-gray-800 rounded-sm">
                                         <button type="button" onClick={logout}>Logout</button>
                                     </li>
