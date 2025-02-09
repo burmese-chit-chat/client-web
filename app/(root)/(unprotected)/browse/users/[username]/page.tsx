@@ -47,7 +47,7 @@ export default async function page({ params }: IProps) {
                                 <BookMarked />
                                 Save User
                             </Button>
-                            <ButtonWithLoader handler={create_chat_room} navigation_link={`/chat/${me._id}`} className="px-9 bg-blue-400 text-black" variant={"secondary"}>
+                            <ButtonWithLoader handler={create_chat_room} navigation_link={`/chat/${user._id}`} className="px-9 bg-blue-400 text-black" variant={"secondary"}>
                                 <MessageCircleMore />
                                 Chat
                             </ButtonWithLoader>
