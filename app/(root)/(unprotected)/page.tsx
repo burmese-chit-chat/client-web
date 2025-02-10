@@ -5,7 +5,7 @@ import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import Link from "next/link";
 
 export default async function Home() {
-    const image_1 = "https://i.postimg.cc/85M4DKR5/6080355312726032716.jpg";
+    // const image_1 = "https://i.postimg.cc/85M4DKR5/6080355312726032716.jpg";
     const image_2 = "https://i.postimg.cc/VLwnCfcK/6084494651882064070.jpg";
     return (
         <>
@@ -20,16 +20,10 @@ export default async function Home() {
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="flex justify-center gap-3 h-[500px]">
-                    <Link href={image_1} target="_blank">
-                        <Avatar className="h-full">
-                            <AvatarImage className="w-full h-full" src={image_1} alt="my pic"></AvatarImage>
-                            <AvatarFallback>sorry!! :(</AvatarFallback>
-                        </Avatar>
-                    </Link>
                     <Link href={image_2} target="_blank">
                         <Avatar className="h-full">
                             <AvatarImage className="w-full h-full" src={image_2} alt="my pic"></AvatarImage>
-                            <AvatarFallback>sorry!! :(</AvatarFallback>
+                            <AvatarFallback className="min-w-[200px]">loading...</AvatarFallback>
                         </Avatar>
                     </Link>
                 </CardContent>

@@ -4,12 +4,14 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import ThemeToggle from "@/app/components/theme-toggle";
-import { AlignJustify } from "lucide-react";
+import { AlignJustify, MessageCircle } from "lucide-react";
 import axios from "axios";
 // import { useRouter } from "next/navigation";
 import EnumGlobals from "@/app/types/EnumPlatformName";
+import { useRouter } from "next/navigation";
 
 export default function SideBar() {
+    const router = useRouter();
     const [isOpen, setIsOpen] = useState<boolean>(false);
     // const router = useRouter();
     const closeSheet = () => setIsOpen(false);
@@ -19,8 +21,12 @@ export default function SideBar() {
                 <Link href="/">
                     <h1 className=" uppercase font-bold">{ EnumGlobals.platform_name }</h1>
                 </Link>
-                <div className="flex gap-4">
+                <div className="flex gap-5 items-center">
                     <ThemeToggle></ThemeToggle>
+                    <div onClick={ () => { router.push('/conversations') }} className="relative cursor-pointer">
+                        <MessageCircle className="w-7 h-7"/>
+                        {/* <div className="absolute -bottom-1 -right-0 bg-orange-500 w-3 h-3 rounded-full"></div> */}
+                    </div>
                     <Sheet open={isOpen} onOpenChange={setIsOpen}>
                         <SheetTrigger>
                             <AlignJustify />
@@ -47,12 +53,6 @@ export default function SideBar() {
                                     <Link href={`/browse`} onClick={closeSheet}>
                                         <li className="hover:bg-slate-500 p-4 text-gray-800 rounded-sm">
                                             <span>Browse</span>
-                                        </li>
-                                    </Link>
-                                    <Separator className="my-4"></Separator>
-                                    <Link href={`/conversations`} onClick={closeSheet}>
-                                        <li className="hover:bg-slate-500 p-4 text-gray-800 rounded-sm">
-                                            <span>My Conversations</span>
                                         </li>
                                     </Link>
                                     <Separator className="my-4"></Separator>
