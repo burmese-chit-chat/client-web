@@ -44,12 +44,12 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
         <div className="">
             {/* Header */}
             <div className="p-4">
-                <div className="grid grid-cols-12 gap-2 items-center">
-                    <Avatar className="col-span-2">
+                <div className="flex justify-start items-center gap-6">
+                    <Avatar className="w-16 h-16">
                         <AvatarImage src={user.profile?.secure_url || ""} alt="user profile" />
                         <AvatarFallback>{(user.name || user.username)[0]}</AvatarFallback>
                     </Avatar>
-                    <div className="col-span-10 font-bold text-2xl">{user.name || user.username}</div>
+                    <div className="font-bold text-3xl">{user.name || user.username}</div>
                 </div>
             </div>
 
@@ -68,9 +68,9 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
 
             {/* Chat Input (Hardcoded, no functionality) */}
             <div className="p-4 w-full">
-                <div className="flex items-stretch">
+                <div className="flex items-stretch justify-start">
                     <input type="text" onChange={e => set_new_message(e.target.value)} value={new_message} className="flex-1 p-2 border border-gray-300 rounded-l-md focus:outline-none" placeholder="Type your message..." />
-                    <button onClick={send_message} type="button" className="bg-blue-600 text-white px-4 py-2 rounded-r-md hover:bg-blue-700 transition">
+                    <button onClick={send_message} type="button" className="bg-gray-600 text-white px-4 py-2 rounded-r-md hover:bg-blue-700 transition">
                         Send
                     </button>
                 </div>
