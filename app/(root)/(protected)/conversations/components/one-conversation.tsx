@@ -26,12 +26,12 @@ export default function OneConversation(props: IProps) {
     return (
         <>
             {!loading ? (
-                <div onClick={go_to_chat_page} className="grid grid-cols-12 border-b border-gray-400 py-2 px-1 hover:bg-gray-400 rounded-t-md focus:bg-gray-400 cursor-pointer">
-                    <Avatar className="col-span-2">
+                <div onClick={go_to_chat_page} className="flex justify-start items-center gap-4 border-b border-gray-400 py-2 px-1 hover:bg-gray-400 rounded-t-md focus:bg-gray-400 cursor-pointer">
+                    <Avatar className="">
                         <AvatarImage src={user.profile?.secure_url || ""}></AvatarImage>
                         <AvatarFallback>{(user.name || user.username)?.[0] || "u"}</AvatarFallback>
                     </Avatar>
-                    <div className="flex justify-between col-span-10">
+                    <div className="flex justify-between">
                         <div>
                             <div className="mb-2 text-lg font-bold">{user.name || user.username}</div>
                             <div className={`text-sm ${get_is_read() ? 'text-gray-700' : 'text-white font-bold'}`}>{text_cut(props.conversation.last_message.message)}</div>

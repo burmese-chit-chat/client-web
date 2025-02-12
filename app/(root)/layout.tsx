@@ -4,6 +4,7 @@ import SideBar from "@/app/(root)/components/side-bar";
 import get_me from "../lib/get-me";
 import NotificationSocket from "./components/notification-socket";
 import get_unread_notifications_count from "./lib/get-unread-notifications-count";
+import ActiveSocket from "./components/active-socket";
 
 export default async function layout({ children }: { children: React.ReactNode }) {
     const me = await get_me();
@@ -13,6 +14,7 @@ export default async function layout({ children }: { children: React.ReactNode }
             <>
                 <SideBar unread_notifications_count={unread_notifications_count} />
                 <NotificationSocket me={me} />
+                <ActiveSocket me={me}/>
                 <main>{children}</main>
             </>
         );
