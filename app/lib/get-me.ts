@@ -15,7 +15,7 @@ export default async function get_me() : Promise<IUser | null> {
             }
         );
         const data = await response.json();
-        if(data.status == 200) return data.user;
+        if(data.status == 200) return data.user as IUser;
         else return null;
     } catch (e) {
         console.error("error", e);

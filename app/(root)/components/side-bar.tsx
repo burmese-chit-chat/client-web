@@ -4,15 +4,21 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import ThemeToggle from "@/app/components/theme-toggle";
-import { AlignJustify, MessageCircle } from "lucide-react";
+import { AlignJustify, Bell, MessageCircle } from "lucide-react";
 import axios from "axios";
 // import { useRouter } from "next/navigation";
 import EnumGlobals from "@/app/types/EnumPlatformName";
 import { useRouter } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
 
-export default function SideBar() {
+interface IProps {
+    unread_notifications_count? : number;
+}
+
+export default function SideBar({ unread_notifications_count = 0 } : IProps) {
     const router = useRouter();
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    console.log("in side bar", unread_notifications_count);
     // const router = useRouter();
     const closeSheet = () => setIsOpen(false);
     return (
@@ -26,6 +32,11 @@ export default function SideBar() {
                     <div onClick={ () => { router.push('/conversations') }} className="relative cursor-pointer">
                         <MessageCircle className="w-7 h-7"/>
                         {/* <div className="absolute -bottom-1 -right-0 bg-orange-500 w-3 h-3 rounded-full"></div> */}
+                    </div>
+                    <div onClick={() => { router.push('/notifications') }} className="relative">
+                        <Bell className="w-7 h-7"/>
+                        { !!unread_notifications_count && <Badge className="bg-orange-400 rounded-full absolute -bottom-2 -right-3">{ unread_notifications_count }</Badge> }
+                        
                     </div>
                     <Sheet open={isOpen} onOpenChange={setIsOpen}>
                         <SheetTrigger>
