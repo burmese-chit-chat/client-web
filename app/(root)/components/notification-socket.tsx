@@ -3,6 +3,8 @@ import IUser from "@/app/types/IUser";
 import React, { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { refreshConversations } from "../(protected)/conversations/lib/actions";
+import INotification from "@/app/types/INotification";
+import { refreshNotifications } from "../(unprotected)/notifications/lib/actions";
 
 interface IProps {
     me: IUser;
@@ -19,12 +21,13 @@ export default function NotificationSocket({ me }: IProps) {
         }
         const newSocket = io(notification_service_url);
 
-        newSocket.on("received_notification", (data) => {
-          console.log('getting new notification', data);
-          sendNotification('New Message', {
-            body : 'hello world', 
-          });
-          refreshConversations();
+        newSocket.on("received_notification", (data: INotification) => {
+            console.log("getting new notification", data);
+            sendNotification(data.title, {
+                body: data.body,
+            });
+            refreshConversations();
+            refreshNotifications();
         });
         setSocket(newSocket);
 
@@ -42,9 +45,9 @@ export default function NotificationSocket({ me }: IProps) {
 }
 
 function sendNotification(title: string, options?: NotificationOptions): void {
-    if (Notification.permission === 'granted') {
+    if (Notification.permission === "granted") {
         new Notification(title, options);
     } else {
-        console.log('Notification permission not granted.');
+        console.log("Notification permission not granted.");
     }
 }
