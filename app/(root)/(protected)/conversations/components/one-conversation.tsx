@@ -26,7 +26,7 @@ export default function OneConversation(props: IProps) {
     return (
         <>
             {!loading ? (
-                <div onClick={go_to_chat_page} className="grid grid-cols-12 border-b border-gray-400 py-2 px-1 hover:bg-gray-400 rounded-t-md focus:bg-gray-400">
+                <div onClick={go_to_chat_page} className="grid grid-cols-12 border-b border-gray-400 py-2 px-1 hover:bg-gray-400 rounded-t-md focus:bg-gray-400 cursor-pointer">
                     <Avatar className="col-span-2">
                         <AvatarImage src={user.profile?.secure_url || ""}></AvatarImage>
                         <AvatarFallback>{(user.name || user.username)?.[0] || "u"}</AvatarFallback>

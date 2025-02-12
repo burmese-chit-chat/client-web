@@ -17,8 +17,11 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
     const chat_service_url = process.env.NEXT_PUBLIC_CHAT_SERVICE_URL;
     const [new_message, set_new_message] = useState<string>("");
     const [socket, setSocket] = useState<Socket | null>(null);
+    const [notification_socket, set_notification_socket] = useState<Socket | null>(null);
     const chat_room_id = generate_chat_room_id(me._id, user._id);
     const update_seen_based_on_sender = useMemo(get_update_seen_based_on_sender_function, [me._id]);
+    const notification_service_url = process.env.NEXT_PUBLIC_NOTIFICATION_SERVICE_URL;
+    const handle_new_message = useMemo(get_handle_new_message_function, [me._id, me.username, me.name, notification_socket, user._id]);
 
     // Scroll to the bottom when the component mounts
     useEffect(() => {
@@ -38,7 +41,20 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
         return () => {
             newSocket.disconnect();
         };
-    }, [chat_service_url, chat_room_id, update_seen_based_on_sender]);
+    }, [chat_service_url, chat_room_id, update_seen_based_on_sender, handle_new_message]);
+
+    useEffect(() => {
+        console.log("checking infinite loop from actual-chat-page.tsx");
+        if (!notification_service_url) {
+            console.error("Socket URL is undefined. Make sure NEXT_PUBLIC_NOTIFICATION_SERVICE_URL is set.");
+            return;
+        }
+        const newSocket = io(notification_service_url);
+        set_notification_socket(newSocket);
+        return () => {
+            newSocket.disconnect();
+        };
+    }, [notification_service_url]);
 
     return (
         <div className="">
@@ -96,9 +112,17 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
         }
     }
 
-    function handle_new_message(arg: IMessage) {
-        console.log("new message arrived", arg);
-        set_messages(prev => [...prev, arg]);
+    function get_handle_new_message_function() {
+        return function (arg: IMessage) {
+            console.log("new message arrived", arg);
+            notification_socket?.emit("send_notification", {
+                sender_id: me._id,
+                receiver_id: user._id,
+                title: `${me.name || me.username || 'a user'} sent you a new message`,
+                body: arg.message,
+            });
+            set_messages(prev => [...prev, arg]);
+        };
     }
 
     function get_update_seen_based_on_sender_function() {
