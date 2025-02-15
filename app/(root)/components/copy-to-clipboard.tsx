@@ -3,12 +3,12 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import React from "react";
 
-export default function CopyToClipboard({ text }: { text: string }) {
+export default function CopyToClipboard({ text, label }: { text: string, label? : string  }) {
     const { toast } = useToast();
     return (
         <>
             <Button title="click to copy" onClick={copy_and_toast} className="mx-2" variant="outline">
-                {text}
+                { label || text }
             </Button>
         </>
     );
