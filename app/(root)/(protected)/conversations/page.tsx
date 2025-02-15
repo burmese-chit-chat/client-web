@@ -18,8 +18,8 @@ export default async function page({ searchParams }: { searchParams: SearchParam
         console.log('pagination', pagination);
         return (
             <>
-                <div className="space-y-3">{conversations && conversations.length ? conversations.map(item => <OneConversation key={item._id} conversation={item} me_id={me._id} />) : <div>No conversations found...</div>}</div>
-                {(conversations.length && pagination ) && <PaginationComponent totalPages={pagination.total} currentPage={current_page} basePath="/conversations" maxDisplayed={2} />}
+                <div className="space-y-3">{(conversations && conversations.length) ? conversations.map(item => <OneConversation key={item._id} conversation={item} me_id={me._id} />) : <div>No conversations found...</div>}</div>
+                {(!!conversations.length && pagination ) && <PaginationComponent totalPages={pagination.total} currentPage={current_page} basePath="/conversations" maxDisplayed={2} />}
             </>
         );
     }
