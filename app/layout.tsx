@@ -28,6 +28,7 @@ export default async function RootLayout({
     return (
         <html className="dark" lang="en" suppressHydrationWarning>
             <head>
+                <meta name="google-adsense-account" content="ca-pub-7511160783457466"></meta>
                 <Script id="adsbygoogle-init" strategy="afterInteractive" crossOrigin="anonymous" src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7511160783457466`} />
             </head>
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased px-4`}>
