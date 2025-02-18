@@ -3,7 +3,8 @@ import { Separator } from "@/components/ui/separator";
 import CopyToClipboard from "../components/copy-to-clipboard";
 
 export default async function Home() {
-    const gmail = "khine.dev.9417@gmail.com";
+    // const gmail = "khine.dev.9417@gmail.com";
+    const yahoo_email = "burmesechitchat@yahoo.com";
     return (
         <>
             <div className="font-bold uppercase">Home</div>
@@ -16,7 +17,7 @@ export default async function Home() {
                     <p>- This is the early stage of the platform and there can be many bugs.</p>
                     <Separator />
                     <p>
-                        - You can report the bugs and some inconveniences to <CopyToClipboard text={gmail} />.
+                        - You can report the bugs and some inconveniences to <CopyToClipboard text={yahoo_email} />.
                     </p>
                     <Separator />
                     <p className="">
