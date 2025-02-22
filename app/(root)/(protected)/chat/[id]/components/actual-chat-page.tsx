@@ -11,6 +11,7 @@ import { refreshConversations } from "../../../conversations/lib/actions";
 import axios from "axios";
 
 export default function ActualChatPage({ me, user, prop_messages }: { me: IUser; user: IUser; prop_messages: Array<IMessage> }) {
+    const scroll_ref = React.useRef<HTMLDivElement>(null);
     const [messages, set_messages] = useState<Array<IMessage>>(prop_messages);
     const [loading_older, set_loading_older] = useState<boolean>(false);
     const { toast } = useToast();
@@ -23,7 +24,6 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
     const notification_service_url = process.env.NEXT_PUBLIC_NOTIFICATION_SERVICE_URL;
     const handle_new_message = useMemo(get_handle_new_message_function, [me._id, me.username, me.name, notification_socket, user._id]);
 
-    // Scroll to the bottom when the component mounts
     useEffect(() => {
         console.log("checking infinite loop from actual-chat-page.tsx");
         if (!chat_service_url) {
@@ -56,6 +56,12 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
         };
     }, [notification_service_url]);
 
+    useEffect(() => {
+        console.log("checking infinite loop from actual-chat-page.tsx");
+        refreshConversations();
+        scroll_to_bottom();
+    }, []);
+
     return (
         <div className="">
             {/* Header */}
@@ -80,6 +86,8 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
                 {messages.map(message => (
                     <MessageBubble key={message._id} message={message} me={me} user={user} />
                 ))}
+                <div className="h-10 w-full"></div>
+                <div ref={scroll_ref} className="w-full"></div>
             </div>
 
             {/* Chat Input (Hardcoded, no functionality) */}
@@ -111,6 +119,13 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
             });
         }
     }
+    function scroll_to_bottom() {
+        if (scroll_ref.current) {
+            console.log("SCROLLING TO BOTTOM");
+            scroll_ref.current.scrollIntoView({ behavior: "smooth" });
+            // scroll_ref.current.scrollTop = scroll_ref.current.scrollHeight;
+        }
+    }
 
     function get_handle_new_message_function() {
         return function (arg: IMessage) {
@@ -118,10 +133,11 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
             notification_socket?.emit("send_notification", {
                 sender_id: me._id,
                 receiver_id: user._id,
-                title: `${me.name || me.username || 'a user'} sent you a new message`,
+                title: `${me.name || me.username || "a user"} sent you a new message`,
                 body: arg.message,
             });
             set_messages(prev => [...prev, arg]);
+            scroll_to_bottom();
         };
     }
 
