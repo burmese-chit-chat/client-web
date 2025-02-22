@@ -14,8 +14,6 @@ export default async function page({ searchParams }: { searchParams: SearchParam
     const data = await get_conversations(me._id, current_page);
     if (data) {
         const { conversations, pagination } = data;
-        console.log("conversations", conversations);
-        console.log('pagination', pagination);
         return (
             <>
                 <div className="space-y-3">{(conversations && conversations.length) ? conversations.map(item => <OneConversation key={item._id} conversation={item} me_id={me._id} />) : <div>No conversations found...</div>}</div>
