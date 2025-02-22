@@ -6,20 +6,22 @@ import Link from "next/link";
 import PaginationComponent from "@/app/components/pagination";
 import SearchForm from "./components/search-form";
 import IUser from "@/app/types/IUser";
+import { EnumGender } from "@/app/types/TGenders";
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
 export default async function BrowsePage({ searchParams }: { searchParams: SearchParams }) {
     const currentPage = Number((await searchParams).page || 1);
     const current_search_keyword = String((await searchParams).search || "");
+    const gender : EnumGender | null = (await searchParams).gender ? String((await searchParams).gender) as EnumGender : null;
     // console.log("current page", currentPage);
-    const { users, pagination } = await browse_all_users(currentPage, current_search_keyword);
+    const { users, pagination } = await browse_all_users(currentPage, current_search_keyword, gender);
     console.log('the users', users);
     return (
         <>
             <h1 className="font-bold uppercase mb-4">Our lovely users</h1>
             <div>
-                <SearchForm page={currentPage} keyword={current_search_keyword} />
+                <SearchForm gender={gender} page={currentPage} keyword={current_search_keyword} />
             </div>
             {!users.length && <div className="opacity-80 my-4">No users found...</div>}
             <div>
