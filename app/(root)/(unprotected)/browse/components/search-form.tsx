@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 
 export default function SearchForm({ page , keyword }: { page: number, keyword? : string }) {
     const router = useRouter();
+    console.log(page);
     const [ search_keyword, set_search_keyword ] = React.useState<string>(keyword || "");
     return (
         <div>
@@ -26,6 +27,6 @@ export default function SearchForm({ page , keyword }: { page: number, keyword? 
     );
     function handleSubmit (e : React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        router.push(`/browse?page=${page}&search=${search_keyword}`);
+        router.push(`/browse?page=${1}&search=${search_keyword}`);
     }
 }
