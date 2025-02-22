@@ -1,22 +1,19 @@
 import React from "react";
 import Link from "next/link";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { EnumGender } from "../types/TGenders";
 
 interface PaginationProps {
-    /** Current active page number */
     currentPage?: number;
-    /** Total number of pages */
     totalPages?: number;
-    /** Base URL path for pagination links */
     basePath?: string;
-    /** Maximum number of page numbers to display */
     maxDisplayed?: number;
-    /** Additional CSS classes */
     className?: string;
     search_keyword? : string;
+    gender? : EnumGender | null;
 }
 
-const PaginationComponent: React.FC<PaginationProps> = ({ currentPage = 1, totalPages = 1, basePath = "", maxDisplayed = 5, className = "", search_keyword = "" }) => {
+const PaginationComponent: React.FC<PaginationProps> = ({ currentPage = 1, totalPages = 1, basePath = "", maxDisplayed = 5, className = "", search_keyword = "" , gender }) => {
     // Ensure currentPage and totalPages are numbers
     const current = Number(currentPage);
     const total = Number(totalPages);
@@ -28,7 +25,6 @@ const PaginationComponent: React.FC<PaginationProps> = ({ currentPage = 1, total
         const startPage = Math.max(1, current - halfDisplay);
         const endPage = Math.min(total, startPage + maxDisplayed - 1);
 
-        // Adjust start if we're near the end
         const adjustedStart = endPage - startPage + 1 < maxDisplayed ? Math.max(1, endPage - maxDisplayed + 1) : startPage;
 
         return Array.from({ length: endPage - adjustedStart + 1 }, (_, i) => adjustedStart + i);
@@ -41,9 +37,9 @@ const PaginationComponent: React.FC<PaginationProps> = ({ currentPage = 1, total
     // Helper to generate href for a page
     const getHref = (page: number): string => {
         if (basePath.includes("?")) {
-            return `${basePath}&page=${page}&search=${search_keyword}`;
+            return gender ? `${basePath}&page=${page}&search=${search_keyword}&gender=${gender}` : `${basePath}&page=${page}&search=${search_keyword}`;
         }
-        return `${basePath}?page=${page}&search=${search_keyword}`;
+        return gender ? `${basePath}?page=${page}&search=${search_keyword}&gender=${gender}` : `${basePath}?page=${page}&search=${search_keyword}`;
     };
 
     if (total <= 1) return null;
