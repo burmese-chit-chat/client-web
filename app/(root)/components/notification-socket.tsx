@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { refreshConversations } from "../(protected)/conversations/lib/actions";
 import INotification from "@/app/types/INotification";
-import { refreshNotifications } from "../(unprotected)/notifications/lib/actions";
+import { refreshMessages } from "../(protected)/chat/[id]/lib/actions";
 
 interface IProps {
     me: IUser;
@@ -23,31 +23,20 @@ export default function NotificationSocket({ me }: IProps) {
 
         newSocket.on("received_notification", (data: INotification) => {
             console.log("getting new notification", data);
-            sendNotification(data.title, {
-                body: data.body,
-            });
             refreshConversations();
-            refreshNotifications();
+            if (data.sender_id !== me._id) refreshMessages(data.sender_id);
         });
         setSocket(newSocket);
 
         return () => {
             newSocket.disconnect();
         };
-    }, [notification_service_url]);
+    }, [notification_service_url, me._id]);
 
     return <>{set_user_id()}</>;
 
     function set_user_id() {
         socket?.emit("set_user_id", me._id);
         return <></>;
-    }
-}
-
-function sendNotification(title: string, options?: NotificationOptions): void {
-    if (Notification.permission === "granted") {
-        new Notification(title, options);
-    } else {
-        console.log("Notification permission not granted.");
     }
 }
