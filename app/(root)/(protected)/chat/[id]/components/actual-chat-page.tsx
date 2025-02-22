@@ -58,7 +58,7 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
 
     useEffect(() => {
         console.log("checking infinite loop from actual-chat-page.tsx");
-        if(!messages[messages.length - 1].is_read) {
+        if(messages.length > 0 && !messages[messages.length - 1].is_read) {
             console.log('refreshing conversations');
             refreshConversations();
         }
