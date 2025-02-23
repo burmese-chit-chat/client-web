@@ -40,8 +40,8 @@ export default async function BrowsePage({ searchParams }: { searchParams: Searc
                     </div>
                 )}
             </div>
-            <Separator className="my-4" />
-            {!!users.length && <PaginationComponent search_keyword={current_search_keyword} totalPages={pagination.total} currentPage={currentPage} basePath="/browse" maxDisplayed={2} gender={gender} />}
+            <Separator className="my-5" />
+            {!!users.length && <PaginationComponent className="" search_keyword={current_search_keyword} totalPages={pagination.total} currentPage={currentPage} basePath="/browse" maxDisplayed={1} gender={gender} />}
         </>
     );
 }

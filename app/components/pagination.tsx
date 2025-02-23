@@ -13,7 +13,7 @@ interface PaginationProps {
     gender? : EnumGender | null;
 }
 
-const PaginationComponent: React.FC<PaginationProps> = ({ currentPage = 1, totalPages = 1, basePath = "", maxDisplayed = 5, className = "", search_keyword = "" , gender }) => {
+const PaginationComponent: React.FC<PaginationProps> = ({ currentPage = 1, totalPages = 1, basePath = "", maxDisplayed = 4, className = "", search_keyword = "" , gender }) => {
     // Ensure currentPage and totalPages are numbers
     const current = Number(currentPage);
     const total = Number(totalPages);

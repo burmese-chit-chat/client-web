@@ -15,6 +15,7 @@ import get_user from "@/app/(root)/(protected)/profile/lib/get-user";
 import get_user_data from "./lib/get-user-data";
 import DeleteProfileButton from "./components/delete-profile-button";
 import { redirect } from "next/navigation";
+import CopyToClipboard from "../../components/copy-to-clipboard";
 
 
 export default async function Profile() {
@@ -28,7 +29,7 @@ export default async function Profile() {
             <div className="mb-10">
                 <div>
                     <GeneralInfo username={user?.username || ""} name={user?.name || ""} gender={user?.gender || ""} age={user?.age || ""} region={user?.region || ""} _id={me._id} profile={user?.profile?.secure_url || ""} />
-                        <div className="mt-9 flex items-center justify-between">
+                        <div className="mt-9 flex items-center justify-start gap-3 flex-wrap">
                             <Link href={`/profile/edit`} className={buttonVariants({ variant: "secondary" })}>
                                 <Pencil />
                                 Edit
@@ -36,6 +37,7 @@ export default async function Profile() {
 
                             <DeleteProfileButton user_id={me._id} base_url={base_url} />
 
+                            <CopyToClipboard text={`${base_url}/browse/users/${user.username}`} label="copy profile link" show_icon show_text={false} toast_text="profile link copied to clipboard" />
                         </div>
                 </div>
                 <Separator className="my-5"></Separator>

@@ -14,6 +14,7 @@ import DeleteProfileButton from "@/app/(root)/(protected)/profile/components/del
 import BrowseUsersUserData from "./components/UserData";
 import ButtonWithLoader from "@/app/components/button-with-loader";
 import create_chat_room from "./lib/create-chat-room-and-navigate-there";
+import CopyToClipboard from "@/app/(root)/components/copy-to-clipboard";
 type IProps = {
     params: Promise<{ username: string }>;
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -31,25 +32,23 @@ export default async function page({ params }: IProps) {
             <div className="my-10">
                 <div>
                     <GeneralInfo username={user.username} name={user?.name || ""} gender={user?.gender || ""} age={user?.age || undefined} region={user?.region || ""} _id={user._id} profile={user?.profile?.secure_url || ""} />
-                    { (me?._id && me._id === user._id) ? (
-                        <div className="mt-9 flex items-center justify-between">
+                    {me?._id && me._id === user._id ? (
+                        <div className="mt-9 flex items-center justify-start gap-3 flex-wrap">
                             <Link href={`/profile/edit`} className={buttonVariants({ variant: "secondary" })}>
                                 <Pencil />
                                 Edit
                             </Link>
 
                             <DeleteProfileButton user_id={me._id} base_url={base_url} />
+                            <CopyToClipboard show_icon show_text={false} text={`${base_url}/browse/users/${user.username}`} label="copy profile link" toast_text="profile link copied to clipboard" />
                         </div>
                     ) : (
-                        <div className="mt-9 flex justify-start gap-4">
-                            {/* <Button className="px-9 bg-green-400 text-black" variant="secondary">
-                                <BookMarked />
-                                Save User
-                            </Button> */}
+                        <div className="mt-9 flex justify-start gap-3 items-center">
                             <ButtonWithLoader handler={create_chat_room} navigation_link={`/chat/${user._id}`} className="px-9 bg-blue-400 text-black" variant={"secondary"}>
                                 <MessageCircleMore />
                                 Chat
                             </ButtonWithLoader>
+                            <CopyToClipboard show_icon show_text={false} text={`${base_url}/browse/users/${user.username}`} label="copy profile link" toast_text="profile link copied to clipboard" />
                         </div>
                     )}
                 </div>
@@ -62,7 +61,6 @@ export default async function page({ params }: IProps) {
             </div>
         </>
     );
-
 }
 export async function generateMetadata({ params }: IProps) {
     const { username } = await params;
@@ -76,5 +74,3 @@ export async function generateMetadata({ params }: IProps) {
         },
     };
 }
-
-
