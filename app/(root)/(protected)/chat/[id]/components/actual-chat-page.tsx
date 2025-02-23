@@ -9,9 +9,12 @@ import IUser from "@/app/types/IUser";
 import { useToast } from "@/hooks/use-toast";
 import { refreshConversations } from "../../../conversations/lib/actions";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function ActualChatPage({ me, user, prop_messages }: { me: IUser; user: IUser; prop_messages: Array<IMessage> }) {
+    const router = useRouter();
     const scroll_ref = React.useRef<HTMLDivElement>(null);
+    const own_base_url = process.env.NEXT_PUBLIC_BASE_URL;
     const [messages, set_messages] = useState<Array<IMessage>>(prop_messages);
     const [loading_older, set_loading_older] = useState<boolean>(false);
     const { toast } = useToast();
@@ -68,8 +71,8 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
     return (
         <div className="">
             {/* Header */}
-            <div className="p-4">
-                <div className="flex justify-start items-center gap-6">
+            <div className="p-3">
+                <div onClick={() => { router.push(`${own_base_url}/browse/users/${user.username}`); }} className="flex justify-start items-center gap-2">
                     <Avatar className="w-16 h-16">
                         <AvatarImage src={user.profile?.secure_url || ""} alt="user profile" />
                         <AvatarFallback>{(user.name || user.username)[0]}</AvatarFallback>
@@ -82,7 +85,7 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
             <Separator className="my-3" />
 
             {/* Chat Messages Container */}
-            <div className="flex-1 overflow-y-auto px-4 space-y-4 h-[62vh]">
+            <div className="flex-1 overflow-y-auto scrollbar-hide px-2 space-y-3 h-[62vh]">
                 <div onClick={load_more} className="text-center text-gray-400 cursor-pointer hover:bg-gray-700">
                     {loading_older ? "loading..." : "load more"}
                 </div>

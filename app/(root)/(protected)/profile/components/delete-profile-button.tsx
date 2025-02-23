@@ -10,7 +10,7 @@ export default function DeleteProfileButton({ user_id, base_url }: IProps) {
     return (
         <Button onClick={delete_profile} type="button" variant="destructive">
             <Trash2 />
-            Delete Profile
+            Delete
         </Button>
     );
     async function delete_profile() {
