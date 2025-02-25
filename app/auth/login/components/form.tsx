@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-// import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
     username: z
@@ -35,8 +34,8 @@ const formSchema = z.object({
 
 export default function LoginForm() {
     const { toast } = useToast();
-    // const router = useRouter();
     const [loading, setLoading] = useState<boolean>(false);
+    const [ show_password, set_show_password ] = useState<boolean>(false);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -69,13 +68,22 @@ export default function LoginForm() {
                         <FormItem>
                             <FormLabel>Password</FormLabel>
                             <FormControl>
-                                <Input placeholder="password" {...field} type="password" />
+                                <Input placeholder="password" {...field} type={show_password ? 'text' : 'password'} />
                             </FormControl>
                             <FormDescription>Please enter your password</FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
+                <div className="flex items-center space-x-2 -translate-y-4">
+                    <div onClick={ () => set_show_password(prev => !prev) } className={`w-4 cursor-pointer rounded-sm p-1 aspect-square border border-gray-300`}>
+                        { show_password && <div className="w-full h-full rounded-sm bg-white"></div> }
+                    </div>
+                    <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        show password
+                    </span>
+                </div>
+
                 <Button variant="secondary" type="submit">
                     Submit
                 </Button>
@@ -85,7 +93,7 @@ export default function LoginForm() {
     );
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-            const error_message: string = "Login error, this may be because of invalid credentials or server error. If you are sure your credentials are correct, please contact the developer.";
+        const error_message: string = "Login error, this may be because of invalid credentials or server error. If you are sure your credentials are correct, please contact the developer.";
         setLoading(true);
         try {
             const response = await axios.post("/api/auth/login", values);
