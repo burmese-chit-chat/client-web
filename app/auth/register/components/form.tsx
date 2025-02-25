@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 // import { useRouter } from "next/navigation";
 
 const formSchema = z
@@ -23,6 +24,8 @@ const formSchema = z
             .regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores")
             .refine(value => !value.includes("."), `Username cannot contain periods, "."`)
             .refine(value => !value.includes(" ") && !value.includes("\n"), "Username cannot contain spaces or line breaks"),
+
+        gender: z.enum(["male", "female"]),
 
         password: z
             .string()
@@ -88,6 +91,30 @@ export default function RegisterForm() {
                 />
                 <FormField
                     control={form.control}
+                    name="gender"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Gender</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select your gender" />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    <SelectItem value="male" aria-selected>
+                                        male
+                                    </SelectItem>
+                                    <SelectItem value="female">female</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <FormDescription>What is your gender?</FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
                     name="password"
                     render={({ field }) => (
                         <FormItem>
@@ -123,7 +150,7 @@ export default function RegisterForm() {
     );
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-            const error_message = "error registering, this may not be your fault, please try again later or contact the developer";
+        const error_message = "error registering, this may not be your fault, please try again later or contact the developer";
         if (usernameLoading) return;
         if (!(await checkUsername(values.username))) return;
         console.log("values", values);
