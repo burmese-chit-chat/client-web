@@ -19,7 +19,7 @@ import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
     name: z.string().min(0).max(50).optional(),
-    age: z.number().min(18, { message: "You should be at least 18 years old." }).max(85).optional(),
+    age: z.coerce.number().min(18, { message : 'you must be at least 18 years old'}).max(85).optional(),
     gender: z.string().min(0).max(10).optional(),
     region: z.string().min(0).max(50).optional(),
     status_message: z.string().min(0).max(550).optional(),
@@ -114,8 +114,8 @@ export default function ProfileEditForm(props: IProps) {
                             <FormItem>
                                 <FormLabel>Age</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="18" {...field} type="number"
-                                    onChange={(e) => field.onChange(e.target.value === "" ? undefined : Number(e.target.value))}
+                                    <Input placeholder="18" { ...field } type="number"
+                                    // onChange={(e) => field.onChange(e.target.value === "" ? undefined : Number(e.target.value))}
                                     />
                                 </FormControl>
                                 <FormDescription>What is your age?</FormDescription>
@@ -271,6 +271,7 @@ export default function ProfileEditForm(props: IProps) {
     );
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
+        console.log(values);
         try {
             const response = await axios.put(`/api/users/${props._id}`, values);
             if (response.data.status === 200) {

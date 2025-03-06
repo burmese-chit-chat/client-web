@@ -9,8 +9,12 @@ import IUser from "@/app/types/IUser";
 import { useToast } from "@/hooks/use-toast";
 import { refreshConversations } from "../../../conversations/lib/actions";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function ActualChatPage({ me, user, prop_messages }: { me: IUser; user: IUser; prop_messages: Array<IMessage> }) {
+    const router = useRouter();
+    const scroll_ref = React.useRef<HTMLDivElement>(null);
+    const own_base_url = process.env.NEXT_PUBLIC_BASE_URL;
     const [messages, set_messages] = useState<Array<IMessage>>(prop_messages);
     const [loading_older, set_loading_older] = useState<boolean>(false);
     const { toast } = useToast();
@@ -23,7 +27,6 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
     const notification_service_url = process.env.NEXT_PUBLIC_NOTIFICATION_SERVICE_URL;
     const handle_new_message = useMemo(get_handle_new_message_function, [me._id, me.username, me.name, notification_socket, user._id]);
 
-    // Scroll to the bottom when the component mounts
     useEffect(() => {
         console.log("checking infinite loop from actual-chat-page.tsx");
         if (!chat_service_url) {
@@ -56,11 +59,20 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
         };
     }, [notification_service_url]);
 
+    useEffect(() => {
+        console.log("checking infinite loop from actual-chat-page.tsx");
+        if(messages.length > 0 && !messages[messages.length - 1].is_read) {
+            console.log('refreshing conversations');
+            refreshConversations();
+        }
+        scroll_to_bottom();
+    }, [messages]);
+
     return (
         <div className="">
             {/* Header */}
-            <div className="p-4">
-                <div className="flex justify-start items-center gap-6">
+            <div className="p-3">
+                <div onClick={() => { router.push(`${own_base_url}/browse/users/${user.username}`); }} className="flex justify-start items-center gap-2">
                     <Avatar className="w-16 h-16">
                         <AvatarImage src={user.profile?.secure_url || ""} alt="user profile" />
                         <AvatarFallback>{(user.name || user.username)[0]}</AvatarFallback>
@@ -73,13 +85,15 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
             <Separator className="my-3" />
 
             {/* Chat Messages Container */}
-            <div className="flex-1 overflow-y-auto px-4 space-y-4 h-[62vh]">
+            <div className="flex-1 overflow-y-auto scrollbar-hide px-2 space-y-3 h-[62vh]">
                 <div onClick={load_more} className="text-center text-gray-400 cursor-pointer hover:bg-gray-700">
                     {loading_older ? "loading..." : "load more"}
                 </div>
                 {messages.map(message => (
                     <MessageBubble key={message._id} message={message} me={me} user={user} />
                 ))}
+                <div className="h-10 w-full"></div>
+                <div ref={scroll_ref} className="w-full"></div>
             </div>
 
             {/* Chat Input (Hardcoded, no functionality) */}
@@ -111,6 +125,13 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
             });
         }
     }
+    function scroll_to_bottom() {
+        if (scroll_ref.current) {
+            console.log("SCROLLING TO BOTTOM");
+            scroll_ref.current.scrollIntoView({ behavior: "smooth" });
+            // scroll_ref.current.scrollTop = scroll_ref.current.scrollHeight;
+        }
+    }
 
     function get_handle_new_message_function() {
         return function (arg: IMessage) {
@@ -118,10 +139,11 @@ export default function ActualChatPage({ me, user, prop_messages }: { me: IUser;
             notification_socket?.emit("send_notification", {
                 sender_id: me._id,
                 receiver_id: user._id,
-                title: `${me.name || me.username || 'a user'} sent you a new message`,
+                title: `${me.name || me.username || "a user"} sent you a new message`,
                 body: arg.message,
             });
             set_messages(prev => [...prev, arg]);
+            scroll_to_bottom();
         };
     }
 
