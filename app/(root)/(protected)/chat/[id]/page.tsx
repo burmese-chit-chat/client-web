@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import get_me from "@/app/lib/get-me";
 import ActualChatPage from "./components/actual-chat-page";
 import { redirect } from "next/navigation";
